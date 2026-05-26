@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معايدة أسرة السادة الهاشم</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        canvas {
+            max-width: 100%;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>معايدة أسرة السادة الهاشم</h2>
+        <p>كل عام وأنتم بخير</p>
+        
+        <input type="text" id="userName" placeholder="اكتب اسمك هنا..." required>
+        
+        <select id="designSelect">
+            <option value="design1.jpg.jpg">النموذج الأول (الكعبة)</option>
+            <option value="design2.jpg.jpg">النموذج الثاني (مخطوطة)</option>
+        </select>
+        
+        <button onclick="generateImage()">معاينة التهنئة</button>
+        <button id="downloadBtn" style="display: none;" onclick="downloadImage()">تحميل الصورة</button>
+
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let currentImage = new Image();
+
+        function generateImage() {
+            const name = document.getElementById('userName').value;
+            const selectedDesign = document.getElementById('designSelect').value;
+
+            if (!name) {
+                alert("الرجاء كتابة الاسم أولاً!");
+                return;
+            }
+
+            currentImage.src = selectedDesign;
+            currentImage.onload = function() {
+                canvas.width = currentImage.width;
+                canvas.height = currentImage.height;
+
+                ctx.drawImage(currentImage, 0, 0);
+
+                ctx.font = "bold 80px 'Arial'"; 
+                ctx.fillStyle = "#000000"; 
+                ctx.textAlign = "center"; 
+
+                // رسم النص (يتم وضع الاسم في المنتصف، وقريباً من الأسفل)
+                ctx.fillText(name, canvas.width / 2, currentImage.height - 250); 
+
+                canvas.style.display = "block";
+                document.getElementById('downloadBtn').style.display = "inline-block";
+            };
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'تهنئة_العيد.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
